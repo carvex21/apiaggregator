@@ -7,10 +7,3 @@ public class AggregatedData
     public List<NewsArticle>? News { get; set; }
     public List<PlaceData>? Places { get; set; }
 }
-
-public class LocationInfo
-{
-    public string? City { get; set; }
-    public double Latitude { get; set; }
-    public double Longitude { get; set; }
-}

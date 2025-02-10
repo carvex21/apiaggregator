@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Aggregator.Api.Models;
+﻿using Aggregator.Api.Models;
 
 namespace Aggregator.Api.Services;
 
@@ -35,12 +33,8 @@ public class AggregatorService : IAggregatorService
 
         return new AggregatedData
         {
-            Location = new LocationInfo
-            {
-                City = locationData.City,
-                Latitude = locationData.Latitude,
-                Longitude = locationData.Longitude
-            },
+            Location = new LocationInfo(city: locationData.City, latitude: locationData.Latitude,
+                longitude: locationData.Longitude),
             Weather = weatherTask.Result,
             News = newsTask.Result,
             Places = placesTask.Result

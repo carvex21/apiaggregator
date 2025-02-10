@@ -1,5 +1,7 @@
 ﻿using Aggregator.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 
 namespace Aggregator.Api.Controllers;
 
