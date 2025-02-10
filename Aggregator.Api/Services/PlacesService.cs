@@ -17,48 +17,55 @@ public class PlacesService : IPlacesService
 
     public async Task<List<PlaceData>> GetPlacesAsync(string placeId)
     {
-        string url = $"?filter=place:{placeId}&categories=tourism.sights&limit=5&apiKey={_apiKey}";
-        HttpResponseMessage response = await _httpClient.GetAsync(url);
-
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            throw new Exception($"Places API request failed: {response.StatusCode}");
-        }
+            string url = $"?filter=place:{placeId}&categories=tourism.sights&limit=5&apiKey={_apiKey}";
+            HttpResponseMessage response = await _httpClient.GetAsync(url);
 
-        string json = await response.Content.ReadAsStringAsync();
-        using var doc = JsonDocument.Parse(json);
-        var root = doc.RootElement;
-
-        if (!root.TryGetProperty("features", out var features) || features.GetArrayLength() == 0)
-        {
-            throw new KeyNotFoundException("No places found in Places API response.");
-        }
-
-        var places = new List<PlaceData>();
-
-        foreach (var feature in features.EnumerateArray())
-        {
-            var properties = feature.GetProperty("properties");
-
-            string? name = properties.TryGetProperty("name", out var nameProp) ? nameProp.GetString() : "Unknown";
-
-            string? category = properties.TryGetProperty("categories", out var categoriesProp) &&
-                               categoriesProp.GetArrayLength() > 0
-                ? categoriesProp[0].GetString()
-                : "Unknown";
-
-            string? address = properties.TryGetProperty("formatted", out var addressProp)
-                ? addressProp.GetString()
-                : "No Address";
-
-            places.Add(new PlaceData
+            if (!response.IsSuccessStatusCode)
             {
-                Name = name,
-                Category = category,
-                Address = address
-            });
-        }
+                throw new Exception($"Places API request failed: {response.StatusCode}");
+            }
 
-        return places;
+            string json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+
+            if (!root.TryGetProperty("features", out var features) || features.GetArrayLength() == 0)
+            {
+                throw new KeyNotFoundException("No places found in Places API response.");
+            }
+
+            var places = new List<PlaceData>();
+
+            foreach (var feature in features.EnumerateArray())
+            {
+                var properties = feature.GetProperty("properties");
+
+                string? name = properties.TryGetProperty("name", out var nameProp) ? nameProp.GetString() : "Unknown";
+
+                string? category = properties.TryGetProperty("categories", out var categoriesProp) &&
+                                   categoriesProp.GetArrayLength() > 0
+                    ? categoriesProp[0].GetString()
+                    : "Unknown";
+
+                string? address = properties.TryGetProperty("formatted", out var addressProp)
+                    ? addressProp.GetString()
+                    : "No Address";
+
+                places.Add(new PlaceData
+                {
+                    Name = name,
+                    Category = category,
+                    Address = address
+                });
+            }
+
+            return places;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 }
