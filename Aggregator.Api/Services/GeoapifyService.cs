@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Aggregator.Api.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Aggregator.Api.Services;
 
@@ -11,10 +12,11 @@ public class GeoapifyService : IGeoapifyService
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
 
-    public GeoapifyService(HttpClient httpClient, IConfiguration config)
+    public GeoapifyService(HttpClient httpClient, IOptions<ApiSettings> settings)
     {
         _httpClient = httpClient;
-        _apiKey = config["ApiSettings:GeoapifyApiKey"] ?? throw new ArgumentNullException("Geoapify API Key missing");
+        _apiKey = settings.Value.GeoapifyApiKey ?? throw new ArgumentNullException("Weather API Key missing");
+
     }
 
     public async Task<LocationData?> GetLocationDataAsync(string city)

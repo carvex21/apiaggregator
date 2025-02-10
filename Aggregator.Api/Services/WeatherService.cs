@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Aggregator.Api.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Aggregator.Api.Services;
 
@@ -11,10 +12,10 @@ public class WeatherService : IWeatherService
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
 
-    public WeatherService(HttpClient httpClient, IConfiguration config)
+    public WeatherService(HttpClient httpClient, IOptions<ApiSettings> settings)
     {
         _httpClient = httpClient;
-        _apiKey = config["ApiSettings:WeatherApiKey"] ?? throw new ArgumentNullException("Weather API Key missing");
+        _apiKey = settings.Value.WeatherApiKey ?? throw new ArgumentNullException("Weather API Key missing");
     }
 
     public async Task<WeatherData?> GetWeatherAsync(double latitude, double longitude)

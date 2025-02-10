@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Aggregator.Api.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Aggregator.Api.Services;
 
@@ -12,10 +13,10 @@ public class PlacesService : IPlacesService
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
 
-    public PlacesService(HttpClient httpClient, IConfiguration config)
+    public PlacesService(HttpClient httpClient, IOptions<ApiSettings> settings)
     {
         _httpClient = httpClient;
-        _apiKey = config["ApiSettings:GeoapifyApiKey"] ?? throw new ArgumentNullException("Geoapify API Key missing");
+        _apiKey = settings.Value.GeoapifyApiKey ?? throw new ArgumentNullException("Weather API Key missing");
     }
 
     public async Task<List<PlaceData>> GetPlacesAsync(string placeId)

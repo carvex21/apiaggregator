@@ -1,3 +1,4 @@
+using Aggregator.Api.Models;
 using Aggregator.Api.Services;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;

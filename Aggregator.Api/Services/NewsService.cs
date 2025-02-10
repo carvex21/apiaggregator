@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Aggregator.Api.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Aggregator.Api.Services;
 
@@ -12,10 +13,10 @@ public class NewsService : INewsService
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
 
-    public NewsService(HttpClient httpClient, IConfiguration config)
+    public NewsService(HttpClient httpClient, IOptions<ApiSettings> settings)
     {
         _httpClient = httpClient;
-        _apiKey = config["ApiSettings:NewsApiKey"] ?? throw new ArgumentNullException("News API Key missing");
+        _apiKey = settings.Value.NewsApiKey ?? throw new ArgumentNullException("Weather API Key missing");
     }
 
     public async Task<List<NewsArticle>> GetNewsAsync(string city)
