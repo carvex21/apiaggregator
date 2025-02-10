@@ -72,13 +72,8 @@ public class GeoapifyService : IGeoapifyService
                 throw new KeyNotFoundException("Missing expected keys in Geoapify response.");
             }
 
-            var locationData = new LocationData
-            {
-                City = cityName,
-                Latitude = latProp.GetDouble(),
-                Longitude = lonProp.GetDouble(),
-                PlaceId = placeIdProp.GetString()
-            };
+            var locationData = new LocationData(cityName, latProp.GetDouble(), lonProp.GetDouble(),
+                placeIdProp.GetString());
 
             _cacheService.SetLocationToCache(city, locationData);
             return locationData;
